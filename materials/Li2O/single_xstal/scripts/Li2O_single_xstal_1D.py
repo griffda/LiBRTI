@@ -12,21 +12,28 @@ length = 2e-6  # 2 micrometers
 n_cells = 100  # number of cells in the mesh
 # Create a 1D mesh
 # need volume file for 1D mesh
-my_model.mesh = F.MeshFromXDMF(mesh="meshes/vertices_mesh/mesh.xdmf", boundary_file="meshes/vertices_mesh/boundaries.xdmf", volume_file="meshes/vertices_mesh/volumes.xdmf")
+my_model.mesh = F.MeshFromXDMF(mesh="FESTIM/materials/Li2O/single_xstal/meshes/1D_Test/1d_mesh.xdmf", boundary_file="FESTIM/materials/Li2O/single_xstal/meshes/1D_Test/1d_boundaries.xdmf", volume_file="FESTIM/materials/Li2O/single_xstal/meshes/1D_Test/1d_volumes.xdmf")
 
 #my_mesh_1D = F.MeshFromRefinement(Geometry=F.Interval(0, length), n_cells=n_cells)
 
 #materials
 #Lithium oxide (Li2O)
-Li2O = F.Material(
-    name = "Li2O",
-    id=1,
-    D_0=1e-7, # Diffusion coefficient at 300 K
-    E_D=0.2, # Activation energy for diffusion
-    thermal_cond=6.5, #6-7RTP 5-10 @200-900 C
-    heat_capacity=2049, #25 degrees C
-    rho=2.013e3, #25 degrees C
-)
+Li2O = F.CppCustomMaterial(
+            id=1,
+            D="1e-7 * (1 + 1e-20 * c_0) * exp(-0.4 / (8.617e-5 * T))",  # m²/s
+            S="1e22",  # constant solubility for simplicity (H/m³/Pa^0.5)
+            traps=[],
+            )
+# Li2O = F.Material(
+#     name = "Li2O",
+#     id=1,
+#     D_0=1.03613E-6, # Diffusion coefficient at 300 K
+#     E_D=0.9028, # Activation energy for diffusion
+#     thermal_cond=6.5, #6-7RTP 5-10 @200-900 C
+#     heat_capacity=2049, #25 degrees C
+#     rho=2.013e3, #25 degrees C
+
+# )
 
 #Lithium carbide (Li2C2)
 #Note: The values for Li2C2 are hypothetical and should be replaced with accurate data
